@@ -2,7 +2,14 @@
 
 The first step you want to perform on your server is to update the APT repository to it has a list of the latest files.
 ```
-sudo apt-get update
+su - root
+apt-get update
+```
+You can now either setup sudo with the commands below for a normal user i.e. joe or run all the commands as root without sudo
+```
+apt-get install sudo
+/usr/sbin/usermod -aG sudo YOUR_USER
+su - YOUR_USER
 ```
 Next install iptables and iptables-persistent we will be using those to configure the firewall later on. We will remove nftables which is the default.
 ```
