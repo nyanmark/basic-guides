@@ -18,6 +18,7 @@ When mariadb has installed we can configure our database.
 ```
 sudo mariadb
 ```
+Once inside mysql cli run the following commands.
 ```
 CREATE DATABASE wordpress;
 CREATE USER 'wordpress'@'%' identified by 'StrongPassword';
