@@ -33,7 +33,7 @@ GRANT ALL PRIVILEGES ON wordpress.* TO 'wordpress'@'%';
 FLUSH PRIVILEGES;
 QUIT;
 ```
-The database should now be created, if you want to allow external connections edit the file /etc/mysql/my.cnf using nano or vi.
+The database should now be created, if you want to allow external connections edit the file /etc/mysql/mariadb.conf.d/50-server.cnf using nano or vi.
 ```
 Replace bind-address = 127.0.0.1 with
 bind-address = 0.0.0.0
