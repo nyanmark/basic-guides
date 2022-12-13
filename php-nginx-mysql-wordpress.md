@@ -149,20 +149,21 @@ sudo systemctl restart nginx
 ```
 Visit your webserver IP to test wether it is working once confirmed to be working setup your iptables.
 ```
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 # ^ Requited on all servers 
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT 
+sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT 
 # ^ Required for nginx
-iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 # ^ Required for nginx
-iptables -A INPUT -p tcp --dport 9000 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 9000 -j ACCEPT
 # ^ Required for php
-iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
 # ^ Required for mysql
-iptables -P INPUT DROP
+sudo iptables -P INPUT DROP
 # ^ Requited on all servers 
 ```
 You can also set up OUTPUT and FORWARDING policies however, that is outside the scope of this guide. Save the iptables rules.
 ```
+sudo -s -H
 iptables-save > /etc/iptables/rules.v4
 ```
