@@ -38,14 +38,24 @@ The database should now be created, if you want to allow external connections ed
 Replace bind-address = 127.0.0.1 with
 bind-address = 0.0.0.0
 ```
+Now you can verify that MariaDB is running on 0.0.0.0 by running commands below.
+```
+sudo systemctl restart mysql
+ss -tln
+```
 To install PHP on your instance run these commands.
 ```
 sudo apt-get install php php-{fpm,pear,cgi,common,zip,mbstring,net-socket,gd,xml-util,mysql,bcmath}
 ```
-If you want to run your PHP on a seperate node to your webserver edit the file /etc/php/8.1/fpm/pool.d/www.conf replace 8.1 with the php version.
+If you want to run your PHP on a seperate node to your webserver edit the file /etc/php/7.4/fpm/pool.d/www.conf replace 7.4 with the php version.
 ```
-Replace listen = 127.0.0.1:9000 with
+Replace listen = /var/run/php7.4-fpm.sock with
 listen = 0.0.0.0:9000
+```
+Finally restart the php-fpm service and verify port 9000 is running on 0.0.0.0.
+```
+sudo systemctl restart php7.4-fpm
+ss -tln
 ```
 Now you should be ready for wordpress itself. First you will need to install nginx.
 ```
@@ -68,7 +78,7 @@ define('DB_PASSWORD', 'StrongPassword');
 ```
 You can now set the file permissions using chown. Remember if running nginx and php on seperate servers both servers need to contain the files.
 ```
-sudo chown -R www-data:www-data /var/www/html/myblog
+sudo chown -R www-data:www-data /var/www/html/wordpress
 ```
 Finally configure nginx, first delete the default config and create a new config for the site.
 ```
