@@ -1,0 +1,3 @@
+mysql_password: "somePassw0rd"
+mysql_server_ip: "192.168.1.2"
+php_server_ip: "192.168.1.1"

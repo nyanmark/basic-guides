@@ -1,0 +1,50 @@
+---
+# tasks file for iptables
+- name: Remove "nftables" package
+  ansible.builtin.apt:
+    name: nftables
+    state: absent
+    purge: true
+- name: Remove useless packages from the cache
+  ansible.builtin.apt:
+    autoclean: yes
+- name: Install "iptables" package
+  ansible.builtin.apt:
+    name: iptables
+    state: present
+- name: Allow related and established connections
+  ansible.builtin.iptables:
+    chain: INPUT
+    ctstate: ESTABLISHED,RELATED
+    jump: ACCEPT
+- name: Allow port 22
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: 22
+    jump: ACCEPT
+- name: Allow port 80
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: 80
+    jump: ACCEPT
+  when: "'nginx' in group_names"
+- name: Allow port 9000
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: 9000
+    jump: ACCEPT
+  when: "'php' in group_names"
+- name: Allow port 3306
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: 3306
+    jump: ACCEPT
+  when: "'mariadb' in group_names"
+- name: Set the policy for the INPUT chain to DROP
+  ansible.builtin.iptables:
+    chain: INPUT
+    policy: DROP

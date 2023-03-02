@@ -1,0 +1,30 @@
+---
+# tasks file for nginx
+- name: Update repositories cache and install 'nginx'
+  ansible.builtin.apt:
+    pkg: 
+      - nginx
+    update_cache: yes
+- name: Remove default nginx configuration
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+- name: Upload nginx conf for wordpress
+  copy:
+    src: wordpress.conf
+    dest: /etc/nginx/sites-enabled/wordpress.conf
+- name: Replace PHP IP
+  replace:
+    path: /etc/nginx/sites-enabled/wordpress.conf
+    regexp: 'PHP-SERVER-IP'
+    replace: '{{ php_server_ip }}'
+- name: Restart service nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: restarted
+- name: Waits for port 80
+  ansible.builtin.wait_for:
+    host: 0.0.0.0
+    port: 80
+    delay: 10
+    state: started

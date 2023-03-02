@@ -1,0 +1,33 @@
+---
+# tasks file for php
+- name: Update repositories cache and install 'php'
+  ansible.builtin.apt:
+    pkg: 
+      - php7.4
+      - php7.4-fpm
+      - php7.4-pear
+      - php7.4-cgi
+      - php7.4-common
+      - php7.4-zip
+      - php7.4-mbstring
+      - php7.4-net-socket
+      - php7.4-gd
+      - php7.4-xml-util
+      - php7.4-mysql
+      - php7.4-bcmath
+    update_cache: yes
+- name: Open php on 0.0.0.0:9000
+  lineinfile:
+    dest: "/etc/php/7.4/fpm/pool.d/www.conf"
+    regexp: "^listen"
+    line: "listen = 0.0.0.0:9000"
+- name: Restart service php7.4-fpm
+  ansible.builtin.systemd:
+    name: php7.4-fpm
+    state: restarted
+- name: Waits for port 9000
+  ansible.builtin.wait_for:
+    host: 0.0.0.0
+    port: 9000
+    delay: 10
+    state: started

@@ -1,0 +1,16 @@
+---
+- hosts: mariadb
+  roles:
+    - mariadb
+- hosts: php
+  roles:
+    - php
+- hosts: nginx
+  roles:
+    - nginx
+- hosts: wordpress
+  roles:
+    - wordpress
+- hosts: all
+  roles:
+    - iptables

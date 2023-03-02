@@ -1,0 +1,36 @@
+---
+# tasks file for mariadb
+- name: Update repositories cache and install 'mariadb-server' and 'python3-mysql' package
+  ansible.builtin.apt:
+    pkg: 
+      - mariadb-server
+      - python3-mysql
+    update_cache: yes
+- name: Create a new database with name 'wordpress'
+  community.mysql.mysql_db:
+    name: wordpress
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
+- name: Create database user with name 'wordpress' and password from variable with all database privileges
+  community.mysql.mysql_user:
+    name: wordpress
+    host: '%'
+    password: '{{ mysql_password }}'
+    priv: 'wordpress.*:ALL'
+    state: present
+    login_unix_socket: /run/mysqld/mysqld.sock
+- name: Open mysql on 0.0.0.0
+  lineinfile:
+    dest: "/etc/mysql/mariadb.conf.d/50-server.cnf"
+    regexp: "^bind-address"
+    line: "bind-address = 0.0.0.0"
+- name: Restart service mariadb
+  ansible.builtin.systemd:
+    name: mysql
+    state: restarted
+- name: Waits for port 3306
+  ansible.builtin.wait_for:
+    host: 0.0.0.0
+    port: 3306
+    delay: 10
+    state: started

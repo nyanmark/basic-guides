@@ -1,0 +1,46 @@
+---
+# tasks file for wordpress
+- name: Create a directory if it does not exist
+  ansible.builtin.file:
+    path: /var/www/html
+    state: directory
+    mode: '0755'
+  when: "'php' in group_names"
+- name: Download and unpack latest WordPress
+  unarchive:
+    src: https://wordpress.org/latest.tar.gz
+    dest: "/var/www/html"
+    remote_src: yes
+    creates: "/var/www/html/wordpress"
+- name: Set ownership
+  file:
+    path: "/var/www/html"
+    state: directory
+    recurse: yes
+    owner: www-data
+    group: www-data
+- name: Copy a "wp-config-sample.php" file on the remote machine for editing
+  ansible.builtin.copy:
+    src: /var/www/html/wordpress/wp-config-sample.php
+    dest: /var/www/html/wordpress/wp-config.php
+    remote_src: yes
+- name: Setup Database Name
+  replace:
+    path: /var/www/html/wordpress/wp-config.php
+    regexp: 'database_name_here'
+    replace: 'wordpress'
+- name: Setup Database User
+  replace:
+    path: /var/www/html/wordpress/wp-config.php
+    regexp: 'username_here'
+    replace: 'wordpress'
+- name: Setup Database Password
+  replace:
+    path: /var/www/html/wordpress/wp-config.php
+    regexp: 'password_here'
+    replace: '{{ mysql_password }}'
+- name: Setup Database Host
+  replace:
+    path: /var/www/html/wordpress/wp-config.php
+    regexp: 'localhost'
+    replace: '{{ mysql_server_ip }}'
